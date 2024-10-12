@@ -1,26 +1,33 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-class Mestre(models.Model):
+class tipo_user(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    nome = models.CharField(max_length=100)
+    tipo = models.TextField()
 
 class Sessao(models.Model):
     nome = models.CharField(max_length=200)
     descricao = models.CharField(max_length=1000)
-    mestre = models.ForeignKey(Mestre, on_delete=models.CASCADE)
-    data_criacao = models.DateTimeField(auto_now_add=True)
+    mestre = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class Loja(models.Model):
     nome = models.CharField(max_length=200)
     image_base = models.TextField(max_length=1000, null=True)
     sessao = models.ForeignKey(Sessao, on_delete=models.CASCADE)
 
+class Atributos(models.Model):
+    nome = models.TextField()
+    valor = models.TextField()
+
 class Item(models.Model):
     nome = models.CharField(max_length=100)
     descricao = models.TextField()
     preco = models.DecimalField(max_digits=10, decimal_places=2)
+    ataque = models.IntegerField(null=True)
+    defesa = models.IntegerField(null=True)
+    defesa_magica = models.IntegerField(null=True)
     image_base = models.TextField(max_length=1000, null=True)
+    atributos = models.ForeignKey(Atributos, on_delete=models.CASCADE)
     loja = models.ForeignKey(Loja, on_delete=models.CASCADE)
 
 class Monstro(models.Model):
@@ -54,6 +61,9 @@ class AtaqueMonstro(models.Model):
 class FichaJogador(models.Model):
     jogador = models.OneToOneField(User, on_delete=models.CASCADE)
     nome_personagem = models.CharField(max_length=100)
+    crit_rate = models.DecimalField()
+    evasion = models.DecimalField()
+    moviment = models.IntegerField()
     nivel = models.IntegerField(default=0)
     image_base = models.TextField(max_length=1000, null=True)
     sessao = models.ForeignKey(Sessao, on_delete=models.CASCADE)
@@ -71,3 +81,8 @@ class Races(models.Model):
     habilidade = models.TextField(max_length=1000)
     habilidade_2 = models.TextField(max_length=1000)
     desvantagem = models.TextField(max_length=1000)
+    sessao = models.ForeignKey(Sessao, on_delete=models.CASCADE)
+    
+class profissao(models.Model):
+    nome = models.CharField(max_length=100)
+    bonus_1 = models.TextField()
